@@ -7,8 +7,8 @@
 
         {{-- Session Messages --}}
         @if ( session()->has('success') )
-        <div>
-            <p class="text-green-500">{{ session('success') }}</p>
+        <div class="mb-2">
+            <x-flash-message message="{{ session('success') }}" />
         </div>
         @endif
 
