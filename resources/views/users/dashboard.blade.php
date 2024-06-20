@@ -7,7 +7,8 @@
 
         {{-- Session Messages --}}
         @if ( session()->has('success') )
-        <div class="mb-2">
+        <div x-data="{ show: true }"
+            x-init="setTimeout(() => show = false, 4000)" x-show="show" class="mb-2">
             <x-flash-message message="{{ session('success') }}" />
         </div>
         @endif
