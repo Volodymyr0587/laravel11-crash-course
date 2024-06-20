@@ -30,7 +30,13 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        $fields = $request->validated();
+
+        $user = auth()->user();
+
+        $user->posts()->create($fields);
+
+        return back()->with('success', 'Your post was created');
     }
 
     /**
