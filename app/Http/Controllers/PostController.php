@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StorePostRequest;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 class PostController extends Controller implements HasMiddleware
 {
@@ -43,7 +44,13 @@ class PostController extends Controller implements HasMiddleware
 
         $user = auth()->user();
 
-        $user->posts()->create($fields);
+        $post = $user->posts()->create($fields);
+        // Store image if exists
+        if ($request->hasFile('image')) {
+            $path = Storage::disk('public')->put('posts_images', $request->image);
+            $post->image = $path;
+            $post->save();
+        }
 
         return back()->with('success', 'Your post was created');
     }
