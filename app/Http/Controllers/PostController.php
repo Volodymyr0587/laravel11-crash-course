@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
-use App\Models\Post;
 
-class PostController extends Controller
+class PostController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth', except: ['index', 'show']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -52,6 +61,8 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
+        Gate::authorize('modify', $post);
+
         return view('posts.edit', compact('post'));
     }
 
@@ -60,6 +71,8 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
+        Gate::authorize('modify', $post);
+
         $fields = $request->validated();
 
         $post->update($fields);
@@ -72,6 +85,8 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        Gate::authorize('modify', $post);
+
         $post->delete();
 
         return back()->with('delete', 'Your post was deleted');
