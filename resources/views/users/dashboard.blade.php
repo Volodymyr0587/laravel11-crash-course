@@ -20,6 +20,7 @@
 
         <form action="{{ route('posts.store') }}" method="post" enctype="multipart/form-data">
             @csrf
+            {{-- Post Title --}}
             <div class="mb-4">
                 <label for="title">Title</label>
                 <input type="text" name="title" value="{{ old('title') }}" class="input @error('title') ring-red-500 @enderror">
@@ -28,6 +29,7 @@
                 @enderror
             </div>
 
+            {{-- Post Body --}}
             <div class="mb-4">
                 <label for="body">Body</label>
 
@@ -37,6 +39,7 @@
                 @enderror
             </div>
 
+            {{-- Post Image --}}
             <div class="mb-4">
                 <label for="image">Cover photo</label>
                 <input type="file" name="image" id="image">

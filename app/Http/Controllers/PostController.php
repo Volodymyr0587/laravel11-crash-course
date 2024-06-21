@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StorePostRequest;
 use Illuminate\Support\Facades\Storage;
@@ -78,13 +79,27 @@ class PostController extends Controller implements HasMiddleware
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
+        // Authorizing the action
         Gate::authorize('modify', $post);
 
-        $fields = $request->validated();
+        // Store image if exists
+        $path = $post->image ?? null;
+        if ($request->hasFile('image')) {
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+            $path = $request->file('image')->store('posts_images', 'public');
+        }
 
-        $post->update($fields);
+        // Update the post
+        $post->update([
+            'title' => $request->input('title'),
+            'body' => $request->input('body'),
+            'image' => $path
+        ]);
 
-        return to_route('dashboard')->with('success', 'Your post was updated');
+        // Redirect to dashboard
+        return redirect()->route('dashboard')->with('success', 'Your post was updated.');
     }
 
     /**
@@ -93,6 +108,11 @@ class PostController extends Controller implements HasMiddleware
     public function destroy(Post $post)
     {
         Gate::authorize('modify', $post);
+
+        // Delete post image if exists
+        if ($post->image) {
+            Storage::disk('public')->delete($post->image);
+        }
 
         $post->delete();
 
