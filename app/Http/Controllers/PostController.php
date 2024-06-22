@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Mail\WelcomeMail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StorePostRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdatePostRequest;
@@ -52,6 +55,8 @@ class PostController extends Controller implements HasMiddleware
             $post->image = $path;
             $post->save();
         }
+        // Send email
+        Mail::to($user)->send( new WelcomeMail($user, $post));
 
         return back()->with('success', 'Your post was created');
     }
