@@ -3,7 +3,7 @@
 
     <div class="mx-auto max-w-screen-sm card">
 
-        <form action="{{ route('register') }}" method="POST">
+        <form action="{{ route('register') }}" method="POST" x-data="formSubmit" @submit.prevent="submit">
             @csrf
             {{-- Username --}}
             <div class="mb-4">
@@ -40,7 +40,7 @@
             </div>
 
             {{-- Submit Button --}}
-            <button class="primary-btn">Register</button>
+            <button x-ref="btn" class="primary-btn">Register</button>
         </form>
 
     </div>
