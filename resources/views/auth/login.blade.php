@@ -1,6 +1,14 @@
 <x-layout>
     <h1 class="title">Welcome back</h1>
 
+
+    @if ( session()->has('status') )
+        <div x-data="{ show: true }"
+            x-init="setTimeout(() => show = false, 4000)" x-show="show">
+            <x-flash-message message="{{ session('status') }}" />
+        </div>
+    @endif
+
     <div class="mx-auto max-w-screen-sm card">
 
         <form action="{{ route('login') }}" method="POST">
@@ -26,9 +34,12 @@
             </div>
 
             {{-- Remember me --}}
-            <div class="mb-4 flex space-x-2">
-                <input type="checkbox" name="remember" id="remember">
-                <label for="remember">Remember me</label>
+            <div class="mb-4 flex justify-between items-center">
+                <div class="flex space-x-2">
+                    <input type="checkbox" name="remember" id="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                <a class="text-blue-500 hover:underline" href="{{ route('password.request') }}">Forgot your password?</a>
             </div>
 
             @error('failed')
